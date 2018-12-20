@@ -1,12 +1,10 @@
 # -*- coding: utf-8 -*-
 # License: AGPLv3
 
-# for 2.0
-
 ######## USER CONFIG ########################################
-shortcutMixed = "8"
-shortcutNewFirst = "9"
-shortcutNewLast = "0"
+shortcutMixed    = "8" # "8"
+shortcutNewFirst = ""  # "9"
+shortcutNewLast  = ""  # "0"
 ######## END USER CONFIG ####################################
 
 
@@ -17,19 +15,21 @@ from anki.hooks import addHook
 from aqt.qt import *
 
 
-#https://www.juliensobczak.com/write/2016/12/26/anki-scripting.html
-#"newSpread": "whether new cards should be mixed with reviews, \
-#   or shown first or last: NEW_CARDS_DISTRIBUTE(0), NEW_CARDS_LAST(1),
-#   NEW_CARDS_FIRST(2)",
+# anki/consts.py
+# whether new cards should be mixed with reviews, or shown first or last
+#    NEW_CARDS_DISTRIBUTE = 0
+#    NEW_CARDS_LAST = 1
+#    NEW_CARDS_FIRST = 2
+
 
 def change_order_of_new_cards(order):
     qc = mw.col.conf
     if order == "mixed":
-        qc['newSpread']=0
+        qc['newSpread']= 0 # NEW_CARDS_DISTRIBUTE
     elif order == "newFirst":
-        qc['newSpread']=2
-    else:
-        qc['newSpread']=1
+        qc['newSpread']= 2 # NEW_CARDS_FIRST
+    elif order == "newLast":
+        qc['newSpread']= 1 # NEW_CARDS_LAST
     #run relevant parts of accept (of preferences change)
     ##relevant part of updateCollection
     mw.col.setMod()
@@ -40,23 +40,11 @@ def change_order_of_new_cards(order):
     if order == "mixed":
         tooltip('new and review cards are mixed')
     elif order == "newFirst":
+        tooltip('new cards shown first')
+    elif order == "newLast":
         tooltip('new cards shown last')
     else:
-        tooltip('new cards shown first')
-
-
-# def newKeyHandler(self, evt):
-#     key = unicode(evt.text())
-#     if key == shortcut0:
-#         change_order_of_new_cards(0)
-#     elif key == shortcut1:
-#         change_order_of_new_cards(1)
-#     elif key == shortcut2:
-#         change_order_of_new_cards(2)
-#     else:
-#         origKeyHandler(self, evt)
-# origKeyHandler = Reviewer._keyHandler
-# Reviewer._keyHandler = newKeyHandler
+        tooltip('error in add-on when_are_new_cards_shown')
 
 
 from aqt.qt import QMainWindow
@@ -95,37 +83,23 @@ def _keyPressEvent(self, evt):
             change_order_of_new_cards("newFirst")
         elif key == shortcutNewLast:
             change_order_of_new_cards("newLast")
-
 AnkiQt.keyPressEvent = _keyPressEvent
-
 
 
 
 def showContextMenu(r, m):
     a=m.addAction("Mix Old and New Cards")
+    if shortcutMixed:
+        a.setShortcut(QKeySequence(shortcutMixed))
     a.triggered.connect(lambda: change_order_of_new_cards("mixed"))
 
     a=m.addAction("New Cards first")
+    if shortcutNewFirst:
+        a.setShortcut(QKeySequence(shortcutNewFirst))
     a.triggered.connect(lambda: change_order_of_new_cards("newFirst"))
 
     a=m.addAction("New Cards Last")
+    if shortcutNewLast:
+        a.setShortcut(QKeySequence(shortcutNewLast))
     a.triggered.connect(lambda: change_order_of_new_cards("newLast"))
-
 addHook("Reviewer.contextMenuEvent", showContextMenu)
-
-
-
-
-"""
-SHOW_IN_CONTEXT_MENU = True
-def insert_reviewer_more_action(self, m):
-    amenu = m.addMenu('Prefs - New Cards')
-    action = amenu.addAction('mix')
-    action.connect(action, SIGNAL('triggered()'),lambda: change_order_of_new_cards("mixed"))
-    action = amenu.addAction('after')
-    action.connect(action, SIGNAL('triggered()'),lambda: change_order_of_new_cards("newFirst"))
-    action = amenu.addAction('before')
-    action.connect(action, SIGNAL('triggered()'),lambda: change_order_of_new_cards("newLast"))
-if SHOW_IN_CONTEXT_MENU:
-    addHook("AnkiWebView.contextMenuEvent", insert_reviewer_more_action)
-"""
