@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# License: AGPLv3
 
 ######## USER CONFIG ########################################
 shortcut0 = "8"
