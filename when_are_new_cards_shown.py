@@ -1,6 +1,12 @@
 # -*- coding: utf-8 -*-
 # License: AGPLv3
 
+# allows to quickly change when new cards are shown.
+# Usually you have to go to the Preferences to adjust this
+# This add-on offers shortcuts and entries in the "More" 
+# menu (lower right corner)
+# use this at your own risk
+
 ######## USER CONFIG ########################################
 shortcutMixed    = "8" # "8"
 shortcutNewFirst = ""  # "9"
