@@ -3,6 +3,16 @@
 # License AGPLv3
 # some code reused from dae/anki/aqt/addcards.py Copyright: Damien Elmes <anki@ichi2.net>
 
+# skip learning steps for this new card and reschedule as review
+# might be useful if:
+# - you add several cards that ask about the same topic in different ways
+#   and you don't want to see them at the same time
+# - cards that you know are easy
+# If you want all cards to be shown only after n days wait until
+# https://github.com/lovac42/3ft_Under is published.
+
+
+
 import aqt
 import aqt.addcards
 
