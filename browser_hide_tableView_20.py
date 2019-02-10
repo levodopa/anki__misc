@@ -43,7 +43,7 @@ Browser.showTableView = True
 Browser.showSidebar = True
 Browser.selection = []
 
-def toggleTableView(self):
+def toggleShowHideTableView(self):
     """ 
     it's not enough to hide self.tableView because tableView and the search bar
     are in a widget. If I hide the tableView this widget will only hold the 
@@ -56,11 +56,11 @@ def toggleTableView(self):
     else:
         self.form.widget.show()
         self.showTableView = True
-Browser.toggleTableView = toggleTableView
+Browser.toggleShowHideTableView = toggleShowHideTableView
 
 
 Browser.toggledMinimized = False
-def ToggleMinimizeTableView(self):
+def toggleMinimizeTableView(self):
     """
     uses ugly workaround with absolute sizes.
     I didn't find a quick solution to set the minimum size or relative sizes
@@ -81,7 +81,7 @@ def ToggleMinimizeTableView(self):
         else:
             self.form.splitter.setSizes([h/2,h/2])
         self.toggledMinimized = False
-Browser.ToggleMinimizeTableView = ToggleMinimizeTableView
+Browser.toggleMinimizeTableView = toggleMinimizeTableView
 
 
 def toggleSidebar(self):
@@ -96,7 +96,8 @@ Browser.toggleSidebar = toggleSidebar
 
 def Both(self):
     self.toggleSidebar()
-    self.toggleTableView() 
+    self.toggleShowHideTableView()
+    #toggleMinimizeTableView()
 Browser.Both = Both
 
 
@@ -150,7 +151,7 @@ def onContextMenu(self, _point):
     else:
         mstr = "minimize this table"
     a = QAction(mstr, self)
-    self.connect(a, SIGNAL("triggered()"), lambda e=self: ToggleMinimizeTableView(e))
+    self.connect(a, SIGNAL("triggered()"), lambda e=self: toggleMinimizeTableView(e))
     m.addAction(a)
 
     m.exec_(QCursor.pos())
@@ -177,13 +178,13 @@ def onSetupMenus(self):
     a.setCheckable(True)
     a.setChecked(True)
     a.setShortcut(QKeySequence(HOTKEY_TOGGLE_TABLE))
-    a.toggled.connect(self.toggleTableView)
+    a.toggled.connect(self.toggleShowHideTableView)
 
     a = m.addAction('Minimize Table')
     a.setCheckable(True)
     a.setChecked(False)
     a.setShortcut(QKeySequence(HOTKEY_TOGGLE_MINIMIZE_TABLE))
-    a.toggled.connect(self.ToggleMinimizeTableView)
+    a.toggled.connect(self.toggleMinimizeTableView)
 
     a = m.addAction('Show Sidebar')
     a.setCheckable(True)
